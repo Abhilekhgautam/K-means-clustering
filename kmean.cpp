@@ -110,11 +110,8 @@ void plot(const std::array<Data<S>, SizeOfArray>& data){
             else PointColor = DARKBLUE;
             DrawCircle(elt.Val[0] , elt.Val[1], 4, PointColor);
         }
-
         EndDrawing();
-
     }
-
     CloseWindow();
 }
 
