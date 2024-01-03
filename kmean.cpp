@@ -2,7 +2,11 @@
 #include <array>
 #include <random>
 
-//Todo: Write a test for the program
+#include <raylib.h>
+
+/*
+ No banter about the time complexity please!!!!
+ */
 
 // 1. Data: generate random numbers how many though? 1M
 // 2. apply the algorithm
@@ -17,7 +21,7 @@ struct Data{
 
 constexpr int NumberOfCluster = 3;
 constexpr int MaxNoOfIteration = 40;
-constexpr int SizeOfArray = 100;
+constexpr int SizeOfArray = 800;
 
 template <int S>
 void KMean(std::array<Data<S>, SizeOfArray>& data){
@@ -81,6 +85,39 @@ void KMean(std::array<Data<S>, SizeOfArray>& data){
  std::cout << '\n';
 }
 
+template<int S>
+void plot(const std::array<Data<S>, SizeOfArray>& data){
+    if(S != 2){
+        std::cerr << "Only 2d data are supported for plotting";
+        return;
+    }
+    const int screenWidth = 900;
+    const int screenHeight = 900;
+
+    InitWindow(screenWidth, screenHeight, "Plotter");
+
+    SetTargetFPS(60);
+    auto PointColor = RED;
+
+    while (!WindowShouldClose())
+    {
+        BeginDrawing();
+
+        ClearBackground(RAYWHITE);
+        for(const auto& elt: data){
+            if(elt.Cluster == 1) PointColor = RED;
+            else if (elt.Cluster == 2) PointColor = GREEN;
+            else PointColor = DARKBLUE;
+            DrawCircle(elt.Val[0] , elt.Val[1], 4, PointColor);
+        }
+
+        EndDrawing();
+
+    }
+
+    CloseWindow();
+}
+
 int main(){
   constexpr int S = 2;
   std::array<Data<S>, SizeOfArray> data{};
@@ -89,7 +126,7 @@ int main(){
   std::random_device r;
  
   std::default_random_engine e1(r());
-  std::uniform_int_distribution<int> uniform_dist(0, 500);
+  std::uniform_int_distribution<int> uniform_dist(0, SizeOfArray);
   for(int i = 0 ; i < SizeOfArray ; ++i) {
       for(int j = 0 ; j < S ; ++j)
          data[i].Val[j] = (float)uniform_dist(e1);
@@ -104,5 +141,7 @@ int main(){
       std::cout << " : " << elt.Cluster << ' ';
       std::cout << '\n';
   }
+    plot(data);
+
   return 0;
 }
